@@ -7,7 +7,7 @@ LDFLAGS := -L/opt/homebrew/lib \
            -lglfw \
            -framework OpenGL
 
-SRC     := main.c shaders.c glad.c mesh.c
+SRC     := main.c shaders.c glad.c mesh.c stb.c
 OBJ     := $(SRC:.c=.o)
 TARGET  := app
 

@@ -5,10 +5,18 @@
   typedef struct {
     GLuint vao;
     GLuint vbo;
+    GLuint ebo;
     GLsizei vertexCount;
   } Mesh;
 
-  Mesh createMesh(const GLfloat *vertices, GLsizei vertexCount);
+  Mesh createMesh(
+    const GLfloat *vertices,
+    GLsizeiptr vertexBufferSize,
+    GLsizei vertexCount,
+    unsigned int* indices,
+    GLsizeiptr indexBufferSize
+  );
+  
   void bindMesh(const Mesh* mesh);
   void destroyMesh(Mesh *mesh);
   void linkMeshAttributes(

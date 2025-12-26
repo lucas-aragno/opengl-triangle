@@ -48,6 +48,7 @@ Shader createShader(const char *vertex_src, const char *fragment_src) {
     GLuint fs = compileShader(GL_FRAGMENT_SHADER, fragment_src);
 
     shader.id = glCreateProgram();
+
     glAttachShader(shader.id, vs);
     glAttachShader(shader.id, fs);
     glLinkProgram(shader.id);

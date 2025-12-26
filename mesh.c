@@ -1,6 +1,5 @@
 #include "mesh.h"
 
-
 void linkMeshAttributes(
   Mesh mesh,
   GLuint layout,
@@ -11,6 +10,7 @@ void linkMeshAttributes(
 ) {
   glBindVertexArray(mesh.vao);
   glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.ebo);
 
   glVertexAttribPointer(
     layout,
@@ -28,48 +28,33 @@ void linkMeshAttributes(
 
 Mesh createMesh(
   const GLfloat *vertices,
-  GLsizei vertexCount
+  GLsizeiptr vertexBufferSize,
+  GLsizei vertexCount,
+  unsigned int* indices,
+  GLsizeiptr indexBufferSize
 ) {
   Mesh mesh = {0};
   mesh.vertexCount = vertexCount;
 
   glGenVertexArrays(1, &mesh.vao);
   glGenBuffers(1, &mesh.vbo);
-
   glBindVertexArray(mesh.vao);
+  glGenBuffers(1, &mesh.ebo);
 
   glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo);
 
-  glBufferData(GL_ARRAY_BUFFER, vertexCount * 3 * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.ebo);
 
-  glVertexAttribPointer(
-    0,
-    3,
-    GL_FLOAT,
-    GL_FALSE,
-    6 * sizeof(float),
-    (void*) 0
-  );
+  glBufferData(GL_ARRAY_BUFFER, vertexBufferSize, vertices, GL_STATIC_DRAW);
 
-  /*
-  glVertexAttribPointer(
-    1,
-    3,
-    GL_FLOAT,
-    GL_FALSE,
-    6 * sizeof(float),
-    (void*)(3 * sizeof(float))
-  );*/
-
-  glEnableVertexAttribArray(0);
-  //glEnableVertexAttribArray(1);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBufferSize, indices, GL_STATIC_DRAW);
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
 
   return mesh;
 }
-
 
 void bindMesh(const Mesh *mesh) {
   glBindVertexArray(mesh->vao);
@@ -78,6 +63,8 @@ void bindMesh(const Mesh *mesh) {
 void destroyMesh(Mesh *mesh) {
   glDeleteVertexArrays(1, &mesh->vao);
   glDeleteBuffers(1, &mesh->vbo);
+  glDeleteBuffers(1, &mesh->ebo);
   mesh->vao = 0;
   mesh->vbo = 0;
+  mesh->ebo = 0;
 }
