@@ -5,6 +5,7 @@ CFLAGS  := -Wall -Wextra -std=c11 \
 
 LDFLAGS := -L/opt/homebrew/lib \
            -lglfw \
+           -lcglm \
            -framework OpenGL
 
 SRC     := main.c shaders.c glad.c mesh.c stb.c
