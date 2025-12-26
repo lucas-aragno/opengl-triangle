@@ -1,0 +1,4 @@
+*.o
+README.md
+include/*
+glad.c
