@@ -6,6 +6,7 @@
 #include "shaders.h"
 #include "mesh.h"
 #include "include/stb_image.h"
+#include "camera.h"
 
 int main() {
   glfwInit();
@@ -123,11 +124,25 @@ int main() {
   double prevTime = glfwGetTime();
 
   glEnable(GL_DEPTH_TEST);
+  
+  Camera camera = {0};
+
+  camera.width = 800;
+  camera.height = 800;
+
+
+camera.speed = 0.01f;
+camera.sensitivity = 100.0f;
+
+glm_vec3_copy((vec3){0.0f, 0.0f, 2.5f}, camera.position);
+glm_vec3_copy((vec3){0.0f, 0.0f, -1.0f}, camera.orientation);
+glm_vec3_copy((vec3){0.0f, 1.0f, 0.0f}, camera.up);
+
   while(!glfwWindowShouldClose(window)) {
     glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 
-    glm_mat4_identity(view);
-    glm_mat4_identity(proj);
+    //glm_mat4_identity(view);
+   //glm_mat4_identity(proj);
     glm_mat4_identity(model);
 
     glm_rotate(model, rotation, (vec3) { 0.0f, 1.0f, 0.0f});
@@ -143,6 +158,17 @@ int main() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     useShader(&shader);
 
+    cam_matrix(
+      &camera,
+      45.0f,
+      0.1f,
+      100.0f,
+      &shader,
+      "camMatrix"
+    );
+
+    cam_input(window, &camera);
+
     double crntTime = glfwGetTime();
     double delta = crntTime - prevTime;
     prevTime = crntTime;
@@ -151,13 +177,13 @@ int main() {
     rotation += rotationSpeed * delta;
 
     GLint tex0Loc = glGetUniformLocation(shader.id, "tex0");
-    GLint modelLoc = glGetUniformLocation(shader.id, "model");
-    GLint viewLoc = glGetUniformLocation(shader.id, "view");
-    GLint projLoc = glGetUniformLocation(shader.id, "proj");
+    //GLint modelLoc = glGetUniformLocation(shader.id, "model");
+   // GLint viewLoc = glGetUniformLocation(shader.id, "view");
+    //GLint projLoc = glGetUniformLocation(shader.id, "proj");
 
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, (float*)model);
-    glUniformMatrix4fv(viewLoc,  1, GL_FALSE, (float*)view);
-    glUniformMatrix4fv(projLoc,  1, GL_FALSE, (float*)proj);
+    //glUniformMatrix4fv(modelLoc, 1, GL_FALSE, (float*)model);
+    //glUniformMatrix4fv(viewLoc,  1, GL_FALSE, (float*)view);
+    //glUniformMatrix4fv(projLoc,  1, GL_FALSE, (float*)proj);
 
     glUniform1i(tex0Loc, 0);
     glBindTexture(GL_TEXTURE_2D, texture);
